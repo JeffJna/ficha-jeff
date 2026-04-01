@@ -1,1076 +1,1286 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ficha Jefferson Almeida — Upper/Lower</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0a0a0a;
-    --surface: #111111;
-    --surface2: #181818;
-    --border: #222222;
-    --accent: #c8f542;
-    --accent2: #f5a623;
-    --text: #e8e8e8;
-    --muted: #666;
-    --red: #ff4d4d;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* Grain overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 1000;
-    opacity: 0.4;
-  }
-
-  .hero {
-    padding: 80px 40px 60px;
-    border-bottom: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero::after {
-    content: 'UPPER/LOWER';
-    position: absolute;
-    right: -20px;
-    top: 50%;
-    transform: translateY(-50%) rotate(90deg);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 120px;
-    color: var(--border);
-    white-space: nowrap;
-    letter-spacing: 8px;
-    pointer-events: none;
-  }
-
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--accent);
-    color: #000;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 6px 14px;
-    border-radius: 2px;
-    margin-bottom: 28px;
-  }
-
-  .badge::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    background: #000;
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.8); }
-  }
-
-  h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(56px, 10vw, 110px);
-    line-height: 0.9;
-    letter-spacing: 2px;
-    margin-bottom: 20px;
-  }
-
-  h1 span { color: var(--accent); }
-
-  .hero-meta {
-    display: flex;
-    gap: 32px;
-    flex-wrap: wrap;
-    margin-top: 32px;
-  }
-
-  .meta-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .meta-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  .meta-value {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  /* Week grid */
-  .week-nav {
-    display: flex;
-    border-bottom: 1px solid var(--border);
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .week-nav::-webkit-scrollbar { display: none; }
-
-  .day-tab {
-    flex: 1;
-    min-width: 120px;
-    padding: 20px 24px;
-    cursor: pointer;
-    border-right: 1px solid var(--border);
-    transition: all 0.2s;
-    position: relative;
-  }
-
-  .day-tab:last-child { border-right: none; }
-
-  .day-tab:hover { background: var(--surface); }
-
-  .day-tab.active {
-    background: var(--surface);
-  }
-
-  .day-tab.active::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--accent);
-  }
-
-  .day-tab.rest-tab.active::after {
-    background: var(--muted);
-  }
-
-  .tab-day {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 4px;
-  }
-
-  .tab-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    letter-spacing: 1px;
-    line-height: 1.1;
-  }
-
-  .tab-type {
-    font-size: 10px;
-    font-weight: 500;
-    margin-top: 6px;
-    padding: 2px 8px;
-    border-radius: 2px;
-    display: inline-block;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  .tag-forca { background: rgba(200, 245, 66, 0.12); color: var(--accent); }
-  .tag-hiper { background: rgba(245, 166, 35, 0.12); color: var(--accent2); }
-  .tag-rest  { background: rgba(255,255,255,0.06); color: var(--muted); }
-
-  /* Content */
-  .content {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 48px 40px;
-  }
-
-  .day-panel { display: none; animation: fadeUp 0.35s ease; }
-  .day-panel.active { display: block; }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .day-header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-bottom: 48px;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-
-  .day-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(36px, 6vw, 64px);
-    letter-spacing: 2px;
-    line-height: 1;
-  }
-
-  .day-title em { color: var(--accent); font-style: normal; }
-  .day-title.hiper em { color: var(--accent2); }
-
-  .day-stats {
-    display: flex;
-    gap: 20px;
-  }
-
-  .stat-box {
-    border: 1px solid var(--border);
-    padding: 14px 20px;
-    text-align: center;
-    min-width: 80px;
-  }
-
-  .stat-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    color: var(--accent);
-    line-height: 1;
-  }
-
-  .day-title.hiper ~ .day-stats .stat-num { color: var(--accent2); }
-
-  .stat-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-top: 4px;
-  }
-
-  /* Blocks */
-  .block {
-    margin-bottom: 40px;
-  }
-
-  .block-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .block-label::before {
-    content: '';
-    width: 20px;
-    height: 1px;
-    background: var(--accent);
-    flex-shrink: 0;
-  }
-
-  .block.hiper .block-label::before { background: var(--accent2); }
-  .block.neutral .block-label::before { background: var(--muted); }
-
-  /* Exercise rows */
-  .exercise {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    align-items: center;
-    gap: 16px;
-    padding: 18px 0;
-    border-bottom: 1px solid var(--border);
-    transition: background 0.15s;
-    position: relative;
-  }
-
-  .exercise:last-child { border-bottom: none; }
-
-  .exercise:hover { background: transparent; }
-  .exercise:hover .ex-name { color: var(--accent); }
-  .exercise.hiper:hover .ex-name { color: var(--accent2); }
-
-  .ex-name {
-    font-size: 16px;
-    font-weight: 500;
-    transition: color 0.15s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .ex-tag {
-    font-size: 10px;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 1px;
-    color: var(--muted);
-    background: var(--surface2);
-    padding: 2px 8px;
-    border-radius: 2px;
-    white-space: nowrap;
-  }
-
-  .ex-sets {
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    color: var(--muted);
-    white-space: nowrap;
-  }
-
-  .ex-reps {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 1px;
-    color: var(--accent);
-    min-width: 80px;
-    text-align: right;
-  }
-
-  .exercise.hiper .ex-reps { color: var(--accent2); }
-  .exercise.neutral .ex-reps { color: var(--muted); }
-
-  /* Rest day */
-  .rest-panel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 80px 40px;
-    text-align: center;
-    gap: 16px;
-  }
-
-  .rest-icon {
-    font-size: 64px;
-    margin-bottom: 8px;
-  }
-
-  .rest-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 48px;
-    letter-spacing: 4px;
-    color: var(--muted);
-  }
-
-  .rest-sub {
-    color: var(--muted);
-    font-size: 14px;
-    max-width: 360px;
-    line-height: 1.7;
-  }
-
-  /* Tips */
-  .tips-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1px;
-    background: var(--border);
-    margin-top: 48px;
-    border: 1px solid var(--border);
-  }
-
-  .tip {
-    background: var(--surface);
-    padding: 24px;
-  }
-
-  .tip-icon { font-size: 20px; margin-bottom: 10px; }
-
-  .tip-title {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 8px;
-  }
-
-  .tip p {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.7;
-  }
-
-  /* Progressive overload table */
-  .overload-box {
-    margin-top: 48px;
-    border: 1px solid var(--border);
-    overflow: hidden;
-  }
-
-  .overload-header {
-    background: var(--accent);
-    color: #000;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    letter-spacing: 3px;
-    padding: 14px 24px;
-  }
-
-  .overload-body {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1px;
-    background: var(--border);
-  }
-
-  .overload-item {
-    background: var(--surface);
-    padding: 20px 24px;
-  }
-
-  .overload-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 36px;
-    color: var(--accent);
-    line-height: 1;
-  }
-
-  .overload-desc {
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 6px;
-    line-height: 1.6;
-  }
-
-  /* Cardio tag */
-  .cardio-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .cardio-row:last-child { border-bottom: none; }
-
-  .cardio-label {
-    flex: 1;
-    font-size: 15px;
-    font-weight: 500;
-  }
-
-  .cardio-detail {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--muted);
-  }
-
-  @media (max-width: 600px) {
-    .hero { padding: 48px 20px 40px; }
-    .content { padding: 32px 20px; }
-    .hero::after { display: none; }
-    .exercise { grid-template-columns: 1fr auto; }
-    .ex-sets { display: none; }
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ficha Jefferson Almeida — Upper/Lower</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #060606;
+      --surface: rgba(17, 17, 17, 0.72);
+      --surface-strong: rgba(20, 20, 20, 0.9);
+      --surface2: rgba(30, 30, 30, 0.65);
+      --border: rgba(255,255,255,0.08);
+      --border-strong: rgba(255,255,255,0.13);
+      --accent: #c8f542;
+      --accent2: #f5a623;
+      --accent-soft: rgba(200, 245, 66, 0.16);
+      --accent2-soft: rgba(245, 166, 35, 0.16);
+      --text: #f1f1f1;
+      --muted: #9a9a9a;
+      --muted-2: #707070;
+      --shadow: 0 20px 60px rgba(0,0,0,0.35);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --max-width: 1180px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background:
+        radial-gradient(circle at 15% 20%, rgba(200, 245, 66, 0.12), transparent 28%),
+        radial-gradient(circle at 85% 12%, rgba(245, 166, 35, 0.12), transparent 24%),
+        radial-gradient(circle at 50% 120%, rgba(200, 245, 66, 0.08), transparent 32%),
+        linear-gradient(180deg, #050505 0%, #0a0a0a 40%, #060606 100%);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before,
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::before {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: .34;
+      mix-blend-mode: soft-light;
+    }
+
+    body::after {
+      background:
+        radial-gradient(circle at 20% 20%, rgba(200, 245, 66, 0.08), transparent 18%),
+        radial-gradient(circle at 80% 10%, rgba(245, 166, 35, 0.08), transparent 18%);
+      filter: blur(60px);
+      animation: floatGlow 14s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatGlow {
+      from { transform: translate3d(0, 0, 0) scale(1); }
+      to   { transform: translate3d(0, 12px, 0) scale(1.04); }
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+    }
+
+    .container {
+      width: min(var(--max-width), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero-wrap {
+      padding: 26px 0 18px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 78px 44px 42px;
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(200,245,66,.35), rgba(255,255,255,.04), rgba(245,166,35,.35));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      z-index: -1;
+      opacity: .75;
+    }
+
+    .hero::after {
+      content: 'UPPER / LOWER';
+      position: absolute;
+      right: -34px;
+      top: 52%;
+      transform: translateY(-50%) rotate(90deg);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(76px, 10vw, 138px);
+      line-height: 1;
+      letter-spacing: 10px;
+      color: rgba(255,255,255,0.04);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 28px;
+      align-items: end;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      width: fit-content;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(200,245,66,0.25);
+      background: rgba(200, 245, 66, 0.1);
+      color: var(--accent);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
+    }
+
+    .badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 0 rgba(200,245,66,.5);
+      animation: pulseDot 2.2s infinite;
+    }
+
+    @keyframes pulseDot {
+      0% { box-shadow: 0 0 0 0 rgba(200,245,66,.45); }
+      70% { box-shadow: 0 0 0 14px rgba(200,245,66,0); }
+      100% { box-shadow: 0 0 0 0 rgba(200,245,66,0); }
+    }
+
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(62px, 10vw, 126px);
+      line-height: .88;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      text-wrap: balance;
+    }
+
+    h1 span {
+      color: var(--accent);
+      text-shadow: 0 0 24px rgba(200,245,66,.15);
+    }
+
+    .hero-sub {
+      max-width: 640px;
+      color: #c9c9c9;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .hero-side {
+      display: grid;
+      gap: 14px;
+      align-self: stretch;
+    }
+
+    .hero-card {
+      padding: 20px 22px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(10px);
+      transition: transform .35s ease, border-color .35s ease, background .35s ease;
+    }
+
+    .hero-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,.14);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .hero-card-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .hero-card-value {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 30px;
+    }
+
+    .meta-item {
+      padding: 18px 16px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.025);
+      backdrop-filter: blur(8px);
+      transition: transform .35s ease, border-color .35s ease;
+    }
+
+    .meta-item:hover {
+      transform: translateY(-3px);
+      border-color: rgba(200,245,66,.22);
+    }
+
+    .meta-label {
+      display: block;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .meta-value {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.45;
+    }
+
+    .sticky-nav-wrap {
+      position: sticky;
+      top: 14px;
+      z-index: 20;
+      padding: 14px 0 0;
+    }
+
+    .week-nav {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: rgba(10,10,10,0.72);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 12px 40px rgba(0,0,0,.28);
+    }
+
+    .day-tab {
+      position: relative;
+      border: 1px solid transparent;
+      background: transparent;
+      color: inherit;
+      padding: 16px 18px;
+      border-radius: 18px;
+      text-align: left;
+      cursor: pointer;
+      transition: transform .28s ease, background .28s ease, border-color .28s ease, box-shadow .28s ease;
+      min-height: 108px;
+      overflow: hidden;
+    }
+
+    .day-tab::before {
+      content: '';
+      position: absolute;
+      inset: auto -20% -50% -20%;
+      height: 90px;
+      background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%);
+      opacity: 0;
+      transition: opacity .3s ease;
+      pointer-events: none;
+    }
+
+    .day-tab:hover {
+      transform: translateY(-3px);
+      background: rgba(255,255,255,0.03);
+      border-color: rgba(255,255,255,0.08);
+    }
+
+    .day-tab:hover::before,
+    .day-tab.active::before { opacity: 1; }
+
+    .day-tab.active {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border-color: rgba(200,245,66,.22);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02), 0 8px 24px rgba(0,0,0,.2);
+    }
+
+    .day-tab.rest-tab.active {
+      border-color: rgba(255,255,255,.12);
+    }
+
+    .tab-day {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .tab-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 1px;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .tab-type {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+    }
+
+    .tag-forca {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: rgba(200,245,66,.14);
+    }
+
+    .tag-hiper {
+      background: var(--accent2-soft);
+      color: var(--accent2);
+      border-color: rgba(245,166,35,.14);
+    }
+
+    .tag-rest {
+      background: rgba(255,255,255,.05);
+      color: #b8b8b8;
+      border-color: rgba(255,255,255,.08);
+    }
+
+    .content {
+      padding: 26px 0 60px;
+    }
+
+    .day-panel {
+      display: none;
+      opacity: 0;
+      transform: translateY(18px);
+    }
+
+    .day-panel.active {
+      display: block;
+      animation: panelIn .5s cubic-bezier(.22,.61,.36,1) forwards;
+    }
+
+    @keyframes panelIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .day-shell {
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 34px;
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .day-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(38px, 6vw, 68px);
+      line-height: .94;
+      letter-spacing: 2px;
+    }
+
+    .day-title em { color: var(--accent); font-style: normal; }
+    .day-title.hiper em { color: var(--accent2); }
+
+    .day-subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+      max-width: 720px;
+    }
+
+    .day-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(90px, 1fr));
+      gap: 12px;
+    }
+
+    .stat-box {
+      min-width: 94px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.025);
+      text-align: center;
+      transition: transform .35s ease, border-color .35s ease;
+    }
+
+    .stat-box:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255,255,255,.13);
+    }
+
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 34px;
+      line-height: 1;
+      color: var(--accent);
+      letter-spacing: 1px;
+    }
+
+    .day-title.hiper ~ .day-stats .stat-num { color: var(--accent2); }
+
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .day-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .block {
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 22px 24px 10px;
+      background: rgba(255,255,255,0.022);
+      transition: transform .3s ease, border-color .3s ease, background .3s ease;
+    }
+
+    .block:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,.11);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .block-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding-bottom: 14px;
+      margin-bottom: 6px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .block-label::before {
+      content: '';
+      width: 26px;
+      height: 1px;
+      background: var(--accent);
+      box-shadow: 0 0 18px rgba(200,245,66,.4);
+    }
+
+    .block.hiper .block-label::before {
+      background: var(--accent2);
+      box-shadow: 0 0 18px rgba(245,166,35,.35);
+    }
+
+    .block.neutral .block-label::before {
+      background: #8a8a8a;
+      box-shadow: none;
+    }
+
+    .exercise {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 16px;
+      align-items: center;
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      transition: transform .22s ease, padding-left .22s ease;
+    }
+
+    .exercise:last-child { border-bottom: none; }
+
+    .exercise:hover {
+      transform: translateX(4px);
+      padding-left: 4px;
+    }
+
+    .exercise::before {
+      content: '';
+      position: absolute;
+      left: -12px;
+      top: 50%;
+      transform: translateY(-50%) scaleX(0);
+      width: 3px;
+      height: calc(100% - 10px);
+      border-radius: 999px;
+      background: var(--accent);
+      transition: transform .25s ease;
+      transform-origin: left center;
+      opacity: .7;
+    }
+
+    .exercise.hiper::before { background: var(--accent2); }
+    .exercise.neutral::before { background: rgba(255,255,255,.2); }
+    .exercise:hover::before { transform: translateY(-50%) scaleX(1); }
+
+    .ex-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.5;
+      transition: color .2s ease;
+    }
+
+    .exercise:hover .ex-name { color: var(--accent); }
+    .exercise.hiper:hover .ex-name { color: var(--accent2); }
+    .exercise.neutral:hover .ex-name { color: var(--text); }
+
+    .ex-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.06);
+      color: var(--muted);
+      font-size: 10px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    .ex-sets {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .ex-reps {
+      min-width: 92px;
+      text-align: right;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px;
+      letter-spacing: 1px;
+      color: var(--accent);
+    }
+
+    .exercise.hiper .ex-reps { color: var(--accent2); }
+    .exercise.neutral .ex-reps { color: #b8b8b8; }
+
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .tip {
+      position: relative;
+      overflow: hidden;
+      padding: 22px;
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.025);
+      transition: transform .3s ease, border-color .3s ease;
+    }
+
+    .tip::after {
+      content: '';
+      position: absolute;
+      inset: auto -20% -70% auto;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(200,245,66,.12), transparent 65%);
+      filter: blur(10px);
+      opacity: .65;
+      pointer-events: none;
+    }
+
+    .tip:hover {
+      transform: translateY(-4px);
+      border-color: rgba(200,245,66,.18);
+    }
+
+    .tip-icon {
+      font-size: 21px;
+      margin-bottom: 12px;
+    }
+
+    .tip-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .tip p {
+      font-size: 13px;
+      line-height: 1.8;
+      color: #c3c3c3;
+    }
+
+    .rest-panel {
+      display: grid;
+      place-items: center;
+      text-align: center;
+      min-height: 420px;
+      border: 1px dashed rgba(255,255,255,.1);
+      border-radius: 28px;
+      background: radial-gradient(circle at top, rgba(255,255,255,.03), transparent 60%);
+      padding: 44px 28px;
+    }
+
+    .rest-orb {
+      width: 104px;
+      height: 104px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      font-size: 44px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.12), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 0 30px rgba(255,255,255,.04);
+      animation: floatRest 4s ease-in-out infinite;
+      margin-bottom: 18px;
+    }
+
+    @keyframes floatRest {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .rest-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(44px, 8vw, 62px);
+      letter-spacing: 4px;
+      color: #cfcfcf;
+      margin-bottom: 10px;
+    }
+
+    .rest-sub {
+      max-width: 540px;
+      color: var(--muted);
+      line-height: 1.9;
+      font-size: 14px;
+    }
+
+    .overload-box {
+      margin-top: 26px;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      box-shadow: var(--shadow);
+    }
+
+    .overload-header {
+      padding: 18px 24px;
+      background: linear-gradient(90deg, rgba(200,245,66,.95), rgba(245,166,35,.95));
+      color: #060606;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 3px;
+    }
+
+    .overload-body {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      background: rgba(255,255,255,.06);
+    }
+
+    .overload-item {
+      padding: 24px;
+      background: rgba(10,10,10,.75);
+      transition: transform .28s ease, background .28s ease;
+    }
+
+    .overload-item:hover {
+      transform: translateY(-4px);
+      background: rgba(18,18,18,.95);
+    }
+
+    .overload-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 38px;
+      line-height: 1;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .overload-desc {
+      font-size: 13px;
+      color: #c0c0c0;
+      line-height: 1.75;
+    }
+
+    .cardio-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 0 14px;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+
+    .cardio-row:last-child { border-bottom: none; }
+
+    .cardio-label {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .cardio-detail {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.03);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .footer-note {
+      margin-top: 22px;
+      text-align: center;
+      color: var(--muted-2);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 1100px) {
+      .hero-grid,
+      .hero-meta,
+      .overload-body,
+      .tips-grid,
+      .week-nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .week-nav { gap: 10px; }
+
+      .day-tab:last-child {
+        grid-column: span 2;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .hero { padding: 58px 24px 28px; }
+      .hero::after { display: none; }
+      .day-shell { padding: 24px 18px; border-radius: 24px; }
+      .day-header { align-items: stretch; }
+      .day-stats { width: 100%; }
+      .exercise { grid-template-columns: 1fr auto; }
+      .ex-sets { display: none; }
+      .tips-grid,
+      .overload-body,
+      .hero-grid,
+      .hero-meta,
+      .week-nav { grid-template-columns: 1fr; }
+      .day-tab:last-child { grid-column: auto; }
+      .hero-side { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .container { width: min(var(--max-width), calc(100% - 18px)); }
+      .hero-wrap { padding-top: 10px; }
+      .hero { padding: 48px 18px 22px; border-radius: 24px; }
+      .sticky-nav-wrap { top: 8px; }
+      .week-nav { padding: 8px; border-radius: 18px; }
+      .day-tab { min-height: auto; padding: 14px; }
+      .tab-name { font-size: 20px; }
+      .hero-side { grid-template-columns: 1fr; }
+      .stat-box { padding: 14px 10px; }
+      .overload-header { font-size: 18px; line-height: 1.2; }
+      .exercise { gap: 10px; }
+      .ex-name { flex-wrap: wrap; }
+      .ex-reps { min-width: 74px; font-size: 21px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+      .day-panel { opacity: 1; transform: none; }
+    }
+  </style>
 </head>
 <body>
+  <div class="app">
+    <div class="container hero-wrap">
+      <header class="hero reveal">
+        <div class="hero-grid">
+          <div>
+            <div class="badge">Ficha Jefferson Almeida</div>
+            <h1>UPPER/<br><span>LOWER</span></h1>
+            <p class="hero-sub">
+              Estrutura modernizada com visual premium, navegação mais fluida, transições suaves e microinterações para deixar a ficha com cara de produto digital de alto nível.
+            </p>
+          </div>
 
-<div class="hero">
-  <div class="badge">Ficha Jefferson Almeida</div>
-  <h1>UPPER/<br><span>LOWER</span></h1>
-  <div class="hero-meta">
-    <div class="meta-item">
-      <span class="meta-label">Nível</span>
-      <span class="meta-value">Intermediário / Avançado</span>
-    </div>
-    <div class="meta-item">
-      <span class="meta-label">Split</span>
-      <span class="meta-value">5×/semana</span>
-    </div>
-    <div class="meta-item">
-      <span class="meta-label">Metodologia</span>
-      <span class="meta-value">Força + Hipertrofia</span>
-    </div>
-    <div class="meta-item">
-      <span class="meta-label">Tempo s/ limite</span>
-      <span class="meta-value">90–120 min/sessão</span>
-    </div>
-  </div>
-</div>
-
-<!-- Navigation tabs -->
-<nav class="week-nav">
-  <div class="day-tab active" onclick="showDay('seg')">
-    <div class="tab-day">Segunda</div>
-    <div class="tab-name">Upper<br>Força</div>
-    <span class="tab-type tag-forca">Neural</span>
-  </div>
-  <div class="day-tab" onclick="showDay('ter')">
-    <div class="tab-day">Terça</div>
-    <div class="tab-name">Lower<br>Força</div>
-    <span class="tab-type tag-forca">Neural</span>
-  </div>
-  <div class="day-tab" onclick="showDay('qua')">
-    <div class="tab-day">Quarta</div>
-    <div class="tab-name">Push<br>Hiper</div>
-    <span class="tab-type tag-hiper">Volume</span>
-  </div>
-  <div class="day-tab" onclick="showDay('qui')">
-    <div class="tab-day">Quinta</div>
-    <div class="tab-name">Lower<br>Hiper</div>
-    <span class="tab-type tag-hiper">Volume</span>
-  </div>
-  <div class="day-tab" onclick="showDay('sex')">
-    <div class="tab-day">Sexta</div>
-    <div class="tab-name">Pull<br>Hiper</div>
-    <span class="tab-type tag-hiper">Volume</span>
-  </div>
-  <div class="day-tab rest-tab" onclick="showDay('fds')">
-    <div class="tab-day">Sáb + Dom</div>
-    <div class="tab-name">Descanso<br>Total</div>
-    <span class="tab-type tag-rest">Rest</span>
-  </div>
-</nav>
-
-<div class="content">
-
-  <!-- SEGUNDA -->
-  <div class="day-panel active" id="seg">
-    <div class="day-header">
-      <div class="day-title">UPPER <em>FORÇA</em></div>
-      <div class="day-stats">
-        <div class="stat-box">
-          <div class="stat-num">26</div>
-          <div class="stat-label">Séries</div>
+          <div class="hero-side">
+            <div class="hero-card">
+              <div class="hero-card-label">Objetivo</div>
+              <div class="hero-card-value">Força + Hipertrofia com progressão consistente</div>
+            </div>
+            <div class="hero-card">
+              <div class="hero-card-label">Frequência</div>
+              <div class="hero-card-value">5 sessões por semana com descanso estratégico</div>
+            </div>
+          </div>
         </div>
-        <div class="stat-box">
-          <div class="stat-num">4–6</div>
-          <div class="stat-label">Rep range</div>
+
+        <div class="hero-meta">
+          <div class="meta-item">
+            <span class="meta-label">Nível</span>
+            <span class="meta-value">Intermediário / Avançado</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Split</span>
+            <span class="meta-value">5×/semana</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Metodologia</span>
+            <span class="meta-value">Força + Hipertrofia</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Sessão</span>
+            <span class="meta-value">90–120 min</span>
+          </div>
         </div>
-        <div class="stat-box">
-          <div class="stat-num">3–5</div>
-          <div class="stat-label">Min descanso</div>
+      </header>
+    </div>
+
+    <div class="container sticky-nav-wrap">
+      <nav class="week-nav reveal" aria-label="Treinos da semana">
+        <button class="day-tab active" data-day="seg" type="button">
+          <div class="tab-day">Segunda</div>
+          <div class="tab-name">Upper<br>Força</div>
+          <span class="tab-type tag-forca">Neural</span>
+        </button>
+        <button class="day-tab" data-day="ter" type="button">
+          <div class="tab-day">Terça</div>
+          <div class="tab-name">Lower<br>Força</div>
+          <span class="tab-type tag-forca">Neural</span>
+        </button>
+        <button class="day-tab" data-day="qua" type="button">
+          <div class="tab-day">Quarta</div>
+          <div class="tab-name">Push<br>Hiper</div>
+          <span class="tab-type tag-hiper">Volume</span>
+        </button>
+        <button class="day-tab" data-day="qui" type="button">
+          <div class="tab-day">Quinta</div>
+          <div class="tab-name">Lower<br>Hiper</div>
+          <span class="tab-type tag-hiper">Volume</span>
+        </button>
+        <button class="day-tab" data-day="sex" type="button">
+          <div class="tab-day">Sexta</div>
+          <div class="tab-name">Pull<br>Hiper</div>
+          <span class="tab-type tag-hiper">Volume</span>
+        </button>
+        <button class="day-tab rest-tab" data-day="fds" type="button">
+          <div class="tab-day">Sáb + Dom</div>
+          <div class="tab-name">Descanso<br>Total</div>
+          <span class="tab-type tag-rest">Rest</span>
+        </button>
+      </nav>
+    </div>
+
+    <main class="container content">
+      <section class="day-panel active" id="seg">
+        <div class="day-shell reveal">
+          <div class="day-header">
+            <div>
+              <div class="day-title">UPPER <em>FORÇA</em></div>
+              <p class="day-subtitle">Sessão focada em tensão mecânica máxima, compostos pesados e progressão de carga.</p>
+            </div>
+            <div class="day-stats">
+              <div class="stat-box"><div class="stat-num" data-target="26">26</div><div class="stat-label">Séries</div></div>
+              <div class="stat-box"><div class="stat-num">4–6</div><div class="stat-label">Rep range</div></div>
+              <div class="stat-box"><div class="stat-num">3–5</div><div class="stat-label">Min descanso</div></div>
+            </div>
+          </div>
+
+          <div class="day-layout">
+            <div class="block reveal">
+              <div class="block-label">Empurrar — Horizontal</div>
+              <div class="exercise"><div class="ex-name">Supino Reto com Barra <span class="ex-tag">principal</span></div><div class="ex-sets">5 séries</div><div class="ex-reps">4–6</div></div>
+              <div class="exercise"><div class="ex-name">Supino Inclinado com Barra <span class="ex-tag">acessório</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">5–7</div></div>
+            </div>
+
+            <div class="block reveal">
+              <div class="block-label">Puxar — Vertical + Horizontal</div>
+              <div class="exercise"><div class="ex-name">Barra Fixa Lastrada <span class="ex-tag">principal</span></div><div class="ex-sets">5 séries</div><div class="ex-reps">4–6</div></div>
+              <div class="exercise"><div class="ex-name">Remada Curvada com Barra <span class="ex-tag">principal</span></div><div class="ex-sets">4 séries</div><div class="ex-reps">5–7</div></div>
+            </div>
+
+            <div class="block reveal">
+              <div class="block-label">Ombros — Empurrar Vertical</div>
+              <div class="exercise"><div class="ex-name">Desenvolvimento Militar com Barra <span class="ex-tag">principal</span></div><div class="ex-sets">4 séries</div><div class="ex-reps">4–6</div></div>
+            </div>
+
+            <div class="block neutral reveal">
+              <div class="block-label">Saúde do Ombro + Bíceps</div>
+              <div class="exercise neutral"><div class="ex-name">Face Pull com Corda <span class="ex-tag">rotador</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">15–20</div></div>
+              <div class="exercise neutral"><div class="ex-name">Rosca Direta com Barra <span class="ex-tag">complemento</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">6–8</div></div>
+            </div>
+          </div>
+
+          <div class="tips-grid">
+            <div class="tip reveal"><div class="tip-icon">⚡</div><div class="tip-title">Intensidade</div><p>Trabalhe a 1–2 reps do falho em todos os compostos. RPE 8–9.</p></div>
+            <div class="tip reveal"><div class="tip-icon">⏱</div><div class="tip-title">Descanso</div><p>3–5 min nos compostos principais. Não encurte — é onde a força é construída.</p></div>
+            <div class="tip reveal"><div class="tip-icon">📈</div><div class="tip-title">Progressão</div><p>Ao atingir o teto de reps em todas as séries, aumente a carga na próxima semana.</p></div>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
 
-    <div class="block">
-      <div class="block-label">Empurrar — Horizontal</div>
-      <div class="exercise">
-        <div class="ex-name">Supino Reto com Barra <span class="ex-tag">principal</span></div>
-        <div class="ex-sets">5 séries</div>
-        <div class="ex-reps">4–6</div>
-      </div>
-      <div class="exercise">
-        <div class="ex-name">Supino Inclinado com Barra <span class="ex-tag">acessório</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps">5–7</div>
-      </div>
-    </div>
+      <section class="day-panel" id="ter">
+        <div class="day-shell reveal">
+          <div class="day-header">
+            <div>
+              <div class="day-title">LOWER <em>FORÇA</em></div>
+              <p class="day-subtitle">Base da semana para membros inferiores, com foco em potência, estabilidade e estrutura.</p>
+            </div>
+            <div class="day-stats">
+              <div class="stat-box"><div class="stat-num" data-target="28">28</div><div class="stat-label">Séries</div></div>
+              <div class="stat-box"><div class="stat-num">4–8</div><div class="stat-label">Rep range</div></div>
+              <div class="stat-box"><div class="stat-num">3–5</div><div class="stat-label">Min descanso</div></div>
+            </div>
+          </div>
 
-    <div class="block">
-      <div class="block-label">Puxar — Vertical + Horizontal</div>
-      <div class="exercise">
-        <div class="ex-name">Barra Fixa Lastrada <span class="ex-tag">principal</span></div>
-        <div class="ex-sets">5 séries</div>
-        <div class="ex-reps">4–6</div>
-      </div>
-      <div class="exercise">
-        <div class="ex-name">Remada Curvada com Barra <span class="ex-tag">principal</span></div>
-        <div class="ex-sets">4 séries</div>
-        <div class="ex-reps">5–7</div>
-      </div>
-    </div>
+          <div class="day-layout">
+            <div class="block reveal">
+              <div class="block-label">Quadríceps — Dominante</div>
+              <div class="exercise"><div class="ex-name">Agachamento Livre com Barra <span class="ex-tag">principal</span></div><div class="ex-sets">5 séries</div><div class="ex-reps">4–6</div></div>
+              <div class="exercise"><div class="ex-name">Leg Press Pesado (Pé Neutro) <span class="ex-tag">acessório</span></div><div class="ex-sets">4 séries</div><div class="ex-reps">6–8</div></div>
+            </div>
 
-    <div class="block">
-      <div class="block-label">Ombros — Empurrar Vertical</div>
-      <div class="exercise">
-        <div class="ex-name">Desenvolvimento Militar com Barra <span class="ex-tag">principal</span></div>
-        <div class="ex-sets">4 séries</div>
-        <div class="ex-reps">4–6</div>
-      </div>
-    </div>
+            <div class="block reveal">
+              <div class="block-label">Posterior de Coxa</div>
+              <div class="exercise"><div class="ex-name">Levantamento Terra Romeno <span class="ex-tag">principal</span></div><div class="ex-sets">4 séries</div><div class="ex-reps">5–7</div></div>
+              <div class="exercise"><div class="ex-name">Cadeira Flexora <span class="ex-tag">isolamento</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">8–10</div></div>
+            </div>
 
-    <div class="block neutral">
-      <div class="block-label">Saúde do Ombro + Bíceps</div>
-      <div class="exercise neutral">
-        <div class="ex-name">Face Pull com Corda <span class="ex-tag">rotador</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps neutral">15–20</div>
-      </div>
-      <div class="exercise neutral">
-        <div class="ex-name">Rosca Direta com Barra <span class="ex-tag">complemento</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps neutral">6–8</div>
-      </div>
-    </div>
+            <div class="block reveal">
+              <div class="block-label">Unilateral — Estabilidade</div>
+              <div class="exercise"><div class="ex-name">Agachamento Búlgaro (Barra) <span class="ex-tag">força uni</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">6–8</div></div>
+            </div>
 
-    <div class="tips-grid">
-      <div class="tip">
-        <div class="tip-icon">⚡</div>
-        <div class="tip-title">Intensidade</div>
-        <p>Trabalhe a 1–2 reps do falho em todos os compostos. RPE 8–9.</p>
-      </div>
-      <div class="tip">
-        <div class="tip-icon">⏱</div>
-        <div class="tip-title">Descanso</div>
-        <p>3–5 min nos compostos principais. Não encurte — é onde a força é construída.</p>
-      </div>
-      <div class="tip">
-        <div class="tip-icon">📈</div>
-        <div class="tip-title">Progressão</div>
-        <p>Ao atingir o teto (6 reps em todas as séries), adicione 2,5 kg na próxima semana.</p>
-      </div>
-    </div>
-  </div>
+            <div class="block neutral reveal">
+              <div class="block-label">Panturrilha + Core Pesado</div>
+              <div class="exercise neutral"><div class="ex-name">Panturrilha em Pé (Carga Alta) <span class="ex-tag">força</span></div><div class="ex-sets">5 séries</div><div class="ex-reps">6–10</div></div>
+              <div class="exercise neutral"><div class="ex-name">Ab Wheel <span class="ex-tag">core</span></div><div class="ex-sets">4 séries</div><div class="ex-reps">10–12</div></div>
+              <div class="exercise neutral"><div class="ex-name">Prancha com Carga nas Costas <span class="ex-tag">core</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">30–45s</div></div>
+            </div>
+          </div>
 
-  <!-- TERÇA -->
-  <div class="day-panel" id="ter">
-    <div class="day-header">
-      <div class="day-title">LOWER <em>FORÇA</em></div>
-      <div class="day-stats">
-        <div class="stat-box">
-          <div class="stat-num">28</div>
-          <div class="stat-label">Séries</div>
+          <div class="tips-grid">
+            <div class="tip reveal"><div class="tip-icon">🦵</div><div class="tip-title">Agachamento</div><p>Profundidade real e técnica impecável vencem qualquer ego de carga.</p></div>
+            <div class="tip reveal"><div class="tip-icon">🔥</div><div class="tip-title">Búlgaro</div><p>Faça enquanto ainda estiver inteiro. Ele vai cobrar estabilidade e controle.</p></div>
+            <div class="tip reveal"><div class="tip-icon">💤</div><div class="tip-title">Recuperação</div><p>Esse é o treino mais drenante da semana. Sono e alimentação fazem diferença real.</p></div>
+          </div>
         </div>
-        <div class="stat-box">
-          <div class="stat-num">4–8</div>
-          <div class="stat-label">Rep range</div>
+      </section>
+
+      <section class="day-panel" id="qua">
+        <div class="day-shell reveal">
+          <div class="day-header">
+            <div>
+              <div class="day-title hiper">PUSH <em>HIPERTROFIA</em></div>
+              <p class="day-subtitle">Volume elevado, controle do tempo sob tensão e foco total em peito, ombros e tríceps.</p>
+            </div>
+            <div class="day-stats">
+              <div class="stat-box"><div class="stat-num" style="color:var(--accent2)" data-target="32">32</div><div class="stat-label">Séries</div></div>
+              <div class="stat-box"><div class="stat-num" style="color:var(--accent2)">8–15</div><div class="stat-label">Rep range</div></div>
+              <div class="stat-box"><div class="stat-num" style="color:var(--accent2)">90s–2</div><div class="stat-label">Min descanso</div></div>
+            </div>
+          </div>
+
+          <div class="day-layout">
+            <div class="block hiper reveal">
+              <div class="block-label">Peito — Volume Total</div>
+              <div class="exercise hiper"><div class="ex-name">Supino Inclinado com Halter <span class="ex-tag">principal</span></div><div class="ex-sets">4 séries</div><div class="ex-reps">8–12</div></div>
+              <div class="exercise hiper"><div class="ex-name">Supino Reto Máquina ou Smith <span class="ex-tag">volume</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">10–12</div></div>
+              <div class="exercise hiper"><div class="ex-name">Crucifixo Máquina (Peck Deck) <span class="ex-tag">estiramento</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">12–15</div></div>
+              <div class="exercise hiper"><div class="ex-name">Crossover Cabo (Inferior) <span class="ex-tag">finalizador</span></div><div class="ex-sets">2 séries</div><div class="ex-reps">15–20</div></div>
+            </div>
+
+            <div class="block hiper reveal">
+              <div class="block-label">Ombros — Volume Total</div>
+              <div class="exercise hiper"><div class="ex-name">Desenvolvimento com Halter <span class="ex-tag">principal</span></div><div class="ex-sets">4 séries</div><div class="ex-reps">8–12</div></div>
+              <div class="exercise hiper"><div class="ex-name">Elevação Lateral (Cabo ou Halter) <span class="ex-tag">volume</span></div><div class="ex-sets">4 séries</div><div class="ex-reps">12–15</div></div>
+              <div class="exercise hiper"><div class="ex-name">Elevação Lateral Inclinada (Halter) <span class="ex-tag">estiramento</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">15–20</div></div>
+            </div>
+
+            <div class="block hiper reveal">
+              <div class="block-label">Tríceps — Volume Total</div>
+              <div class="exercise hiper"><div class="ex-name">Tríceps Testa (Barra W) <span class="ex-tag">massa</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">8–12</div></div>
+              <div class="exercise hiper"><div class="ex-name">Tríceps Corda no Cabo <span class="ex-tag">volume</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">12–15</div></div>
+              <div class="exercise hiper"><div class="ex-name">Mergulho em Banco (Peso Corporal) <span class="ex-tag">estiramento</span></div><div class="ex-sets">2 séries</div><div class="ex-reps">15–20</div></div>
+            </div>
+          </div>
+
+          <div class="tips-grid">
+            <div class="tip reveal"><div class="tip-icon">🎯</div><div class="tip-title">Mind-muscle</div><p>Controle a excêntrica e faça cada repetição parecer uma repetição de qualidade.</p></div>
+            <div class="tip reveal"><div class="tip-icon">🔁</div><div class="tip-title">Descanso curto</div><p>Aqui a densidade do treino importa. Menos pausa, mais controle e mais pump.</p></div>
+            <div class="tip reveal"><div class="tip-icon">📊</div><div class="tip-title">Volume</div><p>Se estabilizar no topo das reps por 2 semanas, aumente volume ou carga mínima.</p></div>
+          </div>
         </div>
-        <div class="stat-box">
-          <div class="stat-num">3–5</div>
-          <div class="stat-label">Min descanso</div>
+      </section>
+
+      <section class="day-panel" id="qui">
+        <div class="day-shell reveal">
+          <div class="day-header">
+            <div>
+              <div class="day-title hiper">LOWER <em>HIPERTROFIA</em></div>
+              <p class="day-subtitle">Ênfase em posterior, glúteos, quadríceps e construção visual de perna completa.</p>
+            </div>
+            <div class="day-stats">
+              <div class="stat-box"><div class="stat-num" style="color:var(--accent2)" data-target="30">30</div><div class="stat-label">Séries</div></div>
+              <div class="stat-box"><div class="stat-num" style="color:var(--accent2)">8–20</div><div class="stat-label">Rep range</div></div>
+              <div class="stat-box"><div class="stat-num" style="color:var(--accent2)">90s–2</div><div class="stat-label">Min descanso</div></div>
+            </div>
+          </div>
+
+          <div class="day-layout">
+            <div class="block hiper reveal">
+              <div class="block-label">Posterior — Volume Total</div>
+              <div class="exercise hiper"><div class="ex-name">Terra Romeno com Halter <span class="ex-tag">principal</span></div><div class="ex-sets">4 séries</div><div class="ex-reps">8–12</div></div>
+              <div class="exercise hiper"><div class="ex-name">Cadeira Flexora <span class="ex-tag">isolamento</span></div><div class="ex-sets">4 séries</div><div class="ex-reps">12–15</div></div>
+              <div class="exercise hiper"><div class="ex-name">Curl Nórdico (se disponível) <span class="ex-tag">prevenção</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">6–10</div></div>
+            </div>
+
+            <div class="block hiper reveal">
+              <div class="block-label">Quadríceps — Volume Total</div>
+              <div class="exercise hiper"><div class="ex-name">Leg Press Pé Alto (Glúteo) <span class="ex-tag">volume</span></div><div class="ex-sets">4 séries</div><div class="ex-reps">10–15</div></div>
+              <div class="exercise hiper"><div class="ex-name">Passada Andando com Halteres <span class="ex-tag">unilateral</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">12–15</div></div>
+              <div class="exercise hiper"><div class="ex-name">Extensora (Amplitude Curta) <span class="ex-tag">isolamento</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">15–20</div></div>
+            </div>
+
+            <div class="block neutral reveal">
+              <div class="block-label">Panturrilha + Core</div>
+              <div class="exercise neutral"><div class="ex-name">Panturrilha Sentado (Alta Repetição) <span class="ex-tag">sóleo</span></div><div class="ex-sets">5 séries</div><div class="ex-reps">15–20</div></div>
+              <div class="exercise neutral"><div class="ex-name">Elevação de Pernas Pendurado <span class="ex-tag">core</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">12–15</div></div>
+              <div class="exercise neutral"><div class="ex-name">Crunch na Polia <span class="ex-tag">core</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">15–20</div></div>
+            </div>
+          </div>
+
+          <div class="tips-grid">
+            <div class="tip reveal"><div class="tip-icon">🦴</div><div class="tip-title">Curl Nórdico</div><p>Excelente para prevenção. Subestimado, brutal e muito eficiente para posterior.</p></div>
+            <div class="tip reveal"><div class="tip-icon">📐</div><div class="tip-title">Extensora</div><p>Controle total na subida e descida para extrair mais do quadríceps sem roubar.</p></div>
+            <div class="tip reveal"><div class="tip-icon">💤</div><div class="tip-title">Recuperação cruzada</div><p>Lower hoje e Pull amanhã: ótimo encaixe sem colisão direta de grupamentos.</p></div>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
 
-    <div class="block">
-      <div class="block-label">Quadríceps — Dominante</div>
-      <div class="exercise">
-        <div class="ex-name">Agachamento Livre com Barra <span class="ex-tag">principal</span></div>
-        <div class="ex-sets">5 séries</div>
-        <div class="ex-reps">4–6</div>
-      </div>
-      <div class="exercise">
-        <div class="ex-name">Leg Press Pesado (Pé Neutro) <span class="ex-tag">acessório</span></div>
-        <div class="ex-sets">4 séries</div>
-        <div class="ex-reps">6–8</div>
-      </div>
-    </div>
+      <section class="day-panel" id="sex">
+        <div class="day-shell reveal">
+          <div class="day-header">
+            <div>
+              <div class="day-title hiper">PULL <em>HIPERTROFIA</em></div>
+              <p class="day-subtitle">Largura, espessura, dorsais, bíceps e finalização com cardio leve para recuperação ativa.</p>
+            </div>
+            <div class="day-stats">
+              <div class="stat-box"><div class="stat-num" style="color:var(--accent2)" data-target="34">34</div><div class="stat-label">Séries</div></div>
+              <div class="stat-box"><div class="stat-num" style="color:var(--accent2)">8–15</div><div class="stat-label">Rep range</div></div>
+              <div class="stat-box"><div class="stat-num" style="color:var(--accent2)">90s–2</div><div class="stat-label">Min descanso</div></div>
+            </div>
+          </div>
 
-    <div class="block">
-      <div class="block-label">Posterior de Coxa</div>
-      <div class="exercise">
-        <div class="ex-name">Levantamento Terra Romeno <span class="ex-tag">principal</span></div>
-        <div class="ex-sets">4 séries</div>
-        <div class="ex-reps">5–7</div>
-      </div>
-      <div class="exercise">
-        <div class="ex-name">Cadeira Flexora <span class="ex-tag">isolamento</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps">8–10</div>
-      </div>
-    </div>
+          <div class="day-layout">
+            <div class="block hiper reveal">
+              <div class="block-label">Costas — Volume Total</div>
+              <div class="exercise hiper"><div class="ex-name">Pulldown Pegada Larga (Frente) <span class="ex-tag">largura</span></div><div class="ex-sets">4 séries</div><div class="ex-reps">8–12</div></div>
+              <div class="exercise hiper"><div class="ex-name">Remada Articulada (Hammer) <span class="ex-tag">espessura</span></div><div class="ex-sets">4 séries</div><div class="ex-reps">10–12</div></div>
+              <div class="exercise hiper"><div class="ex-name">Remada Unilateral com Halter <span class="ex-tag">unilateral</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">10–12</div></div>
+              <div class="exercise hiper"><div class="ex-name">Pullover no Cabo <span class="ex-tag">grande dorsal</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">12–15</div></div>
+              <div class="exercise hiper"><div class="ex-name">Remada Sentado Cabo (Triângulo) <span class="ex-tag">finalizador</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">12–15</div></div>
+            </div>
 
-    <div class="block">
-      <div class="block-label">Unilateral — Estabilidade</div>
-      <div class="exercise">
-        <div class="ex-name">Agachamento Búlgaro (Barra) <span class="ex-tag">força uni</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps">6–8</div>
-      </div>
-    </div>
+            <div class="block hiper reveal">
+              <div class="block-label">Bíceps — Volume Total</div>
+              <div class="exercise hiper"><div class="ex-name">Rosca Direta com Barra W <span class="ex-tag">massa</span></div><div class="ex-sets">4 séries</div><div class="ex-reps">8–12</div></div>
+              <div class="exercise hiper"><div class="ex-name">Rosca Martelo Alternada <span class="ex-tag">braquial</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">10–12</div></div>
+              <div class="exercise hiper"><div class="ex-name">Rosca Concentrada ou Cabo <span class="ex-tag">pico</span></div><div class="ex-sets">2 séries</div><div class="ex-reps">12–15</div></div>
+            </div>
 
-    <div class="block neutral">
-      <div class="block-label">Panturrilha + Core Pesado</div>
-      <div class="exercise neutral">
-        <div class="ex-name">Panturrilha em Pé (Carga Alta) <span class="ex-tag">força</span></div>
-        <div class="ex-sets">5 séries</div>
-        <div class="ex-reps neutral">6–10</div>
-      </div>
-      <div class="exercise neutral">
-        <div class="ex-name">Ab Wheel <span class="ex-tag">core</span></div>
-        <div class="ex-sets">4 séries</div>
-        <div class="ex-reps neutral">10–12</div>
-      </div>
-      <div class="exercise neutral">
-        <div class="ex-name">Prancha com Carga nas Costas <span class="ex-tag">core</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps neutral">30–45s</div>
-      </div>
-    </div>
+            <div class="block neutral reveal">
+              <div class="block-label">Saúde + Cardio</div>
+              <div class="exercise neutral"><div class="ex-name">Face Pull Leve com Corda <span class="ex-tag">rotador</span></div><div class="ex-sets">3 séries</div><div class="ex-reps">15–20</div></div>
+              <div class="cardio-row"><div class="cardio-label">🚴 Cardio de Baixa Intensidade</div><div class="cardio-detail">25–30 min / Zona 2</div></div>
+            </div>
+          </div>
 
-    <div class="tips-grid">
-      <div class="tip">
-        <div class="tip-icon">🦵</div>
-        <div class="tip-title">Agachamento</div>
-        <p>Profundidade total (abaixo do paralelo). Sem ego — técnica impecável vence carga.</p>
-      </div>
-      <div class="tip">
-        <div class="tip-icon">🔥</div>
-        <div class="tip-title">Búlgaro</div>
-        <p>Exercício mais difícil da sessão. Faça enquanto fresco — logo após o leg press.</p>
-      </div>
-      <div class="tip">
-        <div class="tip-icon">💤</div>
-        <div class="tip-title">Recuperação</div>
-        <p>Durma 8h após esse dia. Lower força é o treino mais estressante da semana.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- QUARTA -->
-  <div class="day-panel" id="qua">
-    <div class="day-header">
-      <div class="day-title hiper">PUSH <em>HIPERTROFIA</em></div>
-      <div class="day-stats">
-        <div class="stat-box">
-          <div class="stat-num" style="color:var(--accent2)">32</div>
-          <div class="stat-label">Séries</div>
+          <div class="tips-grid">
+            <div class="tip reveal"><div class="tip-icon">🔗</div><div class="tip-title">Escápula</div><p>Organize a escápula antes de puxar. Isso muda completamente a qualidade do movimento.</p></div>
+            <div class="tip reveal"><div class="tip-icon">💪</div><div class="tip-title">Bíceps</div><p>Se o braço começar a roubar demais a sessão, corte o volume final e preserve costas.</p></div>
+            <div class="tip reveal"><div class="tip-icon">❤️</div><div class="tip-title">Zona 2</div><p>Cardio leve para acelerar recuperação, não para te destruir no final da semana.</p></div>
+          </div>
         </div>
-        <div class="stat-box">
-          <div class="stat-num" style="color:var(--accent2)">8–15</div>
-          <div class="stat-label">Rep range</div>
+      </section>
+
+      <section class="day-panel" id="fds">
+        <div class="day-shell reveal">
+          <div class="rest-panel">
+            <div class="rest-orb">😴</div>
+            <div class="rest-title">FIM DE SEMANA</div>
+            <p class="rest-sub">Dois dias de descanso total. Comer bem, hidratar, dormir e reduzir fadiga fazem parte da evolução. Sem recuperação, não existe progressão sustentável.</p>
+          </div>
         </div>
-        <div class="stat-box">
-          <div class="stat-num" style="color:var(--accent2)">90s–2</div>
-          <div class="stat-label">Min descanso</div>
+      </section>
+
+      <section class="overload-box reveal">
+        <div class="overload-header">SISTEMA DE PROGRESSÃO — DOUBLE PROGRESSION</div>
+        <div class="overload-body">
+          <div class="overload-item"><div class="overload-num">1°</div><div class="overload-desc">Atinja o teto de reps em todas as séries por 2 semanas consecutivas.</div></div>
+          <div class="overload-item"><div class="overload-num">2°</div><div class="overload-desc">Adicione o menor incremento possível para continuar progredindo sem perder execução.</div></div>
+          <div class="overload-item"><div class="overload-num">3°</div><div class="overload-desc">Com a nova carga, volte ao piso das reps e reinicie o ciclo de construção.</div></div>
+          <div class="overload-item"><div class="overload-num">4°</div><div class="overload-desc">A cada 8–10 semanas, faça deload para baixar fadiga e preservar performance.</div></div>
         </div>
-      </div>
-    </div>
+      </section>
 
-    <div class="block hiper">
-      <div class="block-label">Peito — Volume Total</div>
-      <div class="exercise hiper">
-        <div class="ex-name">Supino Inclinado com Halter <span class="ex-tag">principal</span></div>
-        <div class="ex-sets">4 séries</div>
-        <div class="ex-reps">8–12</div>
-      </div>
-      <div class="exercise hiper">
-        <div class="ex-name">Supino Reto Máquina ou Smith <span class="ex-tag">volume</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps">10–12</div>
-      </div>
-      <div class="exercise hiper">
-        <div class="ex-name">Crucifixo Máquina (Peck Deck) <span class="ex-tag">estiramento</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps">12–15</div>
-      </div>
-      <div class="exercise hiper">
-        <div class="ex-name">Crossover Cabo (Inferior) <span class="ex-tag">finalizador</span></div>
-        <div class="ex-sets">2 séries</div>
-        <div class="ex-reps">15–20</div>
-      </div>
-    </div>
-
-    <div class="block hiper">
-      <div class="block-label">Ombros — Volume Total</div>
-      <div class="exercise hiper">
-        <div class="ex-name">Desenvolvimento com Halter <span class="ex-tag">principal</span></div>
-        <div class="ex-sets">4 séries</div>
-        <div class="ex-reps">8–12</div>
-      </div>
-      <div class="exercise hiper">
-        <div class="ex-name">Elevação Lateral (Cabo ou Halter) <span class="ex-tag">volume</span></div>
-        <div class="ex-sets">4 séries</div>
-        <div class="ex-reps">12–15</div>
-      </div>
-      <div class="exercise hiper">
-        <div class="ex-name">Elevação Lateral Inclinada (Halter) <span class="ex-tag">estiramento</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps">15–20</div>
-      </div>
-    </div>
-
-    <div class="block hiper">
-      <div class="block-label">Tríceps — Volume Total</div>
-      <div class="exercise hiper">
-        <div class="ex-name">Tríceps Testa (Barra W) <span class="ex-tag">massa</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps">8–12</div>
-      </div>
-      <div class="exercise hiper">
-        <div class="ex-name">Tríceps Corda no Cabo <span class="ex-tag">volume</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps">12–15</div>
-      </div>
-      <div class="exercise hiper">
-        <div class="ex-name">Mergulho em Banco (Peso Corporal) <span class="ex-tag">estiramento</span></div>
-        <div class="ex-sets">2 séries</div>
-        <div class="ex-reps">15–20</div>
-      </div>
-    </div>
-
-    <div class="tips-grid">
-      <div class="tip">
-        <div class="tip-icon">🎯</div>
-        <div class="tip-title">Mind-muscle</div>
-        <p>Dia de hipertrofia exige conexão. Controle excêntrico de 2–3s em cada repetição.</p>
-      </div>
-      <div class="tip">
-        <div class="tip-icon">🔁</div>
-        <div class="tip-title">Descanso curto</div>
-        <p>90 segundos entre isolamentos. O pump e a densidade são o objetivo aqui.</p>
-      </div>
-      <div class="tip">
-        <div class="tip-icon">📊</div>
-        <div class="tip-title">Volume</div>
-        <p>Se chegar ao teto superior por 2 semanas seguidas, adicione uma série.</p>
-      </div>
-    </div>
+      <p class="footer-note reveal">Design modernizado com glassmorphism, brilho dinâmico, navegação sticky, animações de entrada, hover states premium e transições mais fluidas.</p>
+    </main>
   </div>
 
-  <!-- QUINTA -->
-  <div class="day-panel" id="qui">
-    <div class="day-header">
-      <div class="day-title hiper">LOWER <em>HIPERTROFIA</em></div>
-      <div class="day-stats">
-        <div class="stat-box">
-          <div class="stat-num" style="color:var(--accent2)">30</div>
-          <div class="stat-label">Séries</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num" style="color:var(--accent2)">8–20</div>
-          <div class="stat-label">Rep range</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num" style="color:var(--accent2)">90s–2</div>
-          <div class="stat-label">Min descanso</div>
-        </div>
-      </div>
-    </div>
+  <script>
+    const tabs = document.querySelectorAll('.day-tab');
+    const panels = document.querySelectorAll('.day-panel');
 
-    <div class="block hiper">
-      <div class="block-label">Posterior — Volume Total</div>
-      <div class="exercise hiper">
-        <div class="ex-name">Terra Romeno com Halter <span class="ex-tag">principal</span></div>
-        <div class="ex-sets">4 séries</div>
-        <div class="ex-reps">8–12</div>
-      </div>
-      <div class="exercise hiper">
-        <div class="ex-name">Cadeira Flexora <span class="ex-tag">isolamento</span></div>
-        <div class="ex-sets">4 séries</div>
-        <div class="ex-reps">12–15</div>
-      </div>
-      <div class="exercise hiper">
-        <div class="ex-name">Curl Nórdico (se disponível) <span class="ex-tag">prevenção</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps">6–10</div>
-      </div>
-    </div>
+    function showDay(id) {
+      panels.forEach(panel => panel.classList.remove('active'));
+      tabs.forEach(tab => tab.classList.remove('active'));
 
-    <div class="block hiper">
-      <div class="block-label">Quadríceps — Volume Total</div>
-      <div class="exercise hiper">
-        <div class="ex-name">Leg Press Pé Alto (Glúteo) <span class="ex-tag">volume</span></div>
-        <div class="ex-sets">4 séries</div>
-        <div class="ex-reps">10–15</div>
-      </div>
-      <div class="exercise hiper">
-        <div class="ex-name">Passada Andando com Halteres <span class="ex-tag">unilateral</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps">12–15</div>
-      </div>
-      <div class="exercise hiper">
-        <div class="ex-name">Extensora (Amplitude Curta) <span class="ex-tag">isolamento</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps">15–20</div>
-      </div>
-    </div>
+      const targetPanel = document.getElementById(id);
+      const targetTab = document.querySelector(`.day-tab[data-day="${id}"]`);
 
-    <div class="block neutral">
-      <div class="block-label">Panturrilha + Core</div>
-      <div class="exercise neutral">
-        <div class="ex-name">Panturrilha Sentado (Alta Repetição) <span class="ex-tag">sóleo</span></div>
-        <div class="ex-sets">5 séries</div>
-        <div class="ex-reps neutral">15–20</div>
-      </div>
-      <div class="exercise neutral">
-        <div class="ex-name">Elevação de Pernas Pendurado <span class="ex-tag">core</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps neutral">12–15</div>
-      </div>
-      <div class="exercise neutral">
-        <div class="ex-name">Crunch na Polia <span class="ex-tag">core</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps neutral">15–20</div>
-      </div>
-    </div>
+      if (targetPanel && targetTab) {
+        targetPanel.classList.add('active');
+        targetTab.classList.add('active');
+        window.scrollTo({ top: document.querySelector('.content').offsetTop - 90, behavior: 'smooth' });
+        observeReveals(targetPanel);
+      }
+    }
 
-    <div class="tips-grid">
-      <div class="tip">
-        <div class="tip-icon">🦴</div>
-        <div class="tip-title">Curl Nórdico</div>
-        <p>Previne lesão de isquiotibiais. Comece só peso corporal. Exercício mais subestimado do treino.</p>
-      </div>
-      <div class="tip">
-        <div class="tip-icon">📐</div>
-        <div class="tip-title">Extensora</div>
-        <p>Use amplitude curta (60–90°) para proteger o joelho e isolar o vasto medial com eficiência.</p>
-      </div>
-      <div class="tip">
-        <div class="tip-icon">💤</div>
-        <div class="tip-title">Amanhã é Pull</div>
-        <p>Lower hoje, Pull amanhã — grupos musculares diferentes, sem conflito de recuperação.</p>
-      </div>
-    </div>
-  </div>
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => showDay(tab.dataset.day));
+    });
 
-  <!-- SEXTA -->
-  <div class="day-panel" id="sex">
-    <div class="day-header">
-      <div class="day-title hiper">PULL <em>HIPERTROFIA</em></div>
-      <div class="day-stats">
-        <div class="stat-box">
-          <div class="stat-num" style="color:var(--accent2)">34</div>
-          <div class="stat-label">Séries</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num" style="color:var(--accent2)">8–15</div>
-          <div class="stat-label">Rep range</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num" style="color:var(--accent2)">90s–2</div>
-          <div class="stat-label">Min descanso</div>
-        </div>
-      </div>
-    </div>
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
 
-    <div class="block hiper">
-      <div class="block-label">Costas — Volume Total</div>
-      <div class="exercise hiper">
-        <div class="ex-name">Pulldown Pegada Larga (Frente) <span class="ex-tag">largura</span></div>
-        <div class="ex-sets">4 séries</div>
-        <div class="ex-reps">8–12</div>
-      </div>
-      <div class="exercise hiper">
-        <div class="ex-name">Remada Articulada (Hammer) <span class="ex-tag">espessura</span></div>
-        <div class="ex-sets">4 séries</div>
-        <div class="ex-reps">10–12</div>
-      </div>
-      <div class="exercise hiper">
-        <div class="ex-name">Remada Unilateral com Halter <span class="ex-tag">unilateral</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps">10–12</div>
-      </div>
-      <div class="exercise hiper">
-        <div class="ex-name">Pullover no Cabo <span class="ex-tag">grande dorsal</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps">12–15</div>
-      </div>
-      <div class="exercise hiper">
-        <div class="ex-name">Remada Sentado Cabo (Triângulo) <span class="ex-tag">finalizador</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps">12–15</div>
-      </div>
-    </div>
+    function observeReveals(scope = document) {
+      scope.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    }
 
-    <div class="block hiper">
-      <div class="block-label">Bíceps — Volume Total</div>
-      <div class="exercise hiper">
-        <div class="ex-name">Rosca Direta com Barra W <span class="ex-tag">massa</span></div>
-        <div class="ex-sets">4 séries</div>
-        <div class="ex-reps">8–12</div>
-      </div>
-      <div class="exercise hiper">
-        <div class="ex-name">Rosca Martelo Alternada <span class="ex-tag">braquial</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps">10–12</div>
-      </div>
-      <div class="exercise hiper">
-        <div class="ex-name">Rosca Concentrada ou Cabo <span class="ex-tag">pico</span></div>
-        <div class="ex-sets">2 séries</div>
-        <div class="ex-reps">12–15</div>
-      </div>
-    </div>
+    observeReveals();
 
-    <div class="block neutral">
-      <div class="block-label">Saúde + Cardio</div>
-      <div class="exercise neutral">
-        <div class="ex-name">Face Pull Leve com Corda <span class="ex-tag">rotador</span></div>
-        <div class="ex-sets">3 séries</div>
-        <div class="ex-reps neutral">15–20</div>
-      </div>
-      <div class="cardio-row">
-        <div class="cardio-label">🚴 Cardio de Baixa Intensidade</div>
-        <div class="cardio-detail">25–30 min / Zona 2</div>
-      </div>
-    </div>
+    const statObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        const target = parseInt(el.dataset.target, 10);
+        if (!target || el.dataset.animated === 'true') return;
 
-    <div class="tips-grid">
-      <div class="tip">
-        <div class="tip-icon">🔗</div>
-        <div class="tip-title">Escápula</div>
-        <p>Deprima e retraia a escápula antes de cada puxada. Isso isola o grande dorsal.</p>
-      </div>
-      <div class="tip">
-        <div class="tip-icon">💪</div>
-        <div class="tip-title">Bíceps</div>
-        <p>Volume de bíceps aqui é alto — se a força cair nas costas, corte a última série de rosca.</p>
-      </div>
-      <div class="tip">
-        <div class="tip-icon">❤️</div>
-        <div class="tip-title">Cardio Zona 2</div>
-        <p>Frequência cardíaca 60–70% do máximo. Conversa possível. Recuperação ativa, não sprint.</p>
-      </div>
-    </div>
-  </div>
+        el.dataset.animated = 'true';
+        let current = 0;
+        const duration = 900;
+        const start = performance.now();
 
-  <!-- FDS -->
-  <div class="day-panel" id="fds">
-    <div class="rest-panel">
-      <div class="rest-icon">😴</div>
-      <div class="rest-title">FIM DE SEMANA</div>
-      <p class="rest-sub">Dois dias de descanso total. Coma bem, hidrate-se, durma 8h por noite. O descanso é parte do treino — não opcional. Síntese proteica máxima acontece nas próximas 24–48h após a sexta.</p>
-    </div>
-  </div>
+        function tick(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          current = Math.floor(progress * target);
+          el.textContent = current;
+          if (progress < 1) requestAnimationFrame(tick);
+          else el.textContent = target;
+        }
 
-  <!-- Progressive Overload -->
-  <div class="overload-box">
-    <div class="overload-header">SISTEMA DE PROGRESSÃO — DOUBLE PROGRESSION</div>
-    <div class="overload-body">
-      <div class="overload-item">
-        <div class="overload-num">1°</div>
-        <div class="overload-desc">Atinja o teto de reps em TODAS as séries por 2 semanas consecutivas</div>
-      </div>
-      <div class="overload-item">
-        <div class="overload-num">2°</div>
-        <div class="overload-desc">Adicione o menor incremento possível (2,5 kg barra / 1 kg halter)</div>
-      </div>
-      <div class="overload-item">
-        <div class="overload-num">3°</div>
-        <div class="overload-desc">Volte ao piso de reps com a nova carga e repita o ciclo</div>
-      </div>
-      <div class="overload-item">
-        <div class="overload-num">4°</div>
-        <div class="overload-desc">A cada 8–10 semanas, faça uma semana de deload (50–60% da carga)</div>
-      </div>
-    </div>
-  </div>
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.35 });
 
-</div>
+    document.querySelectorAll('[data-target]').forEach(el => statObserver.observe(el));
 
-<script>
-  function showDay(id) {
-    document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    event.currentTarget.classList.add('active');
-  }
-</script>
+    document.addEventListener('mousemove', (e) => {
+      const hero = document.querySelector('.hero');
+      const rect = hero.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 10;
+      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 8;
+
+      if (e.clientY < rect.bottom + 80) {
+        hero.style.transform = `translateY(0) rotateX(${(-y).toFixed(2)}deg) rotateY(${x.toFixed(2)}deg)`;
+      }
+    });
+
+    document.addEventListener('mouseleave', () => {
+      const hero = document.querySelector('.hero');
+      hero.style.transform = 'translateY(0) rotateX(0deg) rotateY(0deg)';
+    });
+  </script>
 </body>
 </html>
