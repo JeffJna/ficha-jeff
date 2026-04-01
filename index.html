@@ -822,11 +822,11 @@
     }
 
     @media (max-width: 860px) {
-      .hero { padding: 58px 24px 28px; }
+      .hero { padding: 54px 22px 24px; }
       .hero::after { display: none; }
-      .day-shell { padding: 24px 18px; border-radius: 24px; }
+      .day-shell { padding: 22px 16px; border-radius: 22px; }
       .day-header { align-items: stretch; }
-      .day-stats { width: 100%; }
+      .day-stats { width: 100%; grid-template-columns: repeat(3, 1fr); }
       .exercise { grid-template-columns: 1fr auto; }
       .ex-sets { display: none; }
       .tips-grid,
@@ -836,22 +836,226 @@
       .week-nav { grid-template-columns: 1fr; }
       .day-tab:last-child { grid-column: auto; }
       .hero-side { grid-template-columns: 1fr 1fr; }
+      .sticky-nav-wrap { position: static; }
     }
 
     @media (max-width: 640px) {
-      .container { width: min(var(--max-width), calc(100% - 18px)); }
-      .hero-wrap { padding-top: 10px; }
-      .hero { padding: 48px 18px 22px; border-radius: 24px; }
-      .sticky-nav-wrap { top: 8px; }
-      .week-nav { padding: 8px; border-radius: 18px; }
-      .day-tab { min-height: auto; padding: 14px; }
-      .tab-name { font-size: 20px; }
-      .hero-side { grid-template-columns: 1fr; }
-      .stat-box { padding: 14px 10px; }
-      .overload-header { font-size: 18px; line-height: 1.2; }
-      .exercise { gap: 10px; }
-      .ex-name { flex-wrap: wrap; }
-      .ex-reps { min-width: 74px; font-size: 21px; }
+      .container { width: min(var(--max-width), calc(100% - 14px)); }
+      .hero-wrap { padding-top: 8px; }
+      .hero {
+        padding: 34px 16px 18px;
+        border-radius: 20px;
+        transform: none !important;
+      }
+      .badge {
+        margin-bottom: 18px;
+        font-size: 10px;
+        letter-spacing: 1.4px;
+        padding: 7px 12px;
+      }
+      h1 {
+        font-size: clamp(48px, 18vw, 72px);
+        line-height: 0.9;
+        margin-bottom: 10px;
+      }
+      .hero-sub {
+        font-size: 13px;
+        line-height: 1.65;
+      }
+      .hero-grid,
+      .hero-meta,
+      .hero-side,
+      .tips-grid,
+      .overload-body {
+        grid-template-columns: 1fr;
+      }
+      .hero-card,
+      .meta-item,
+      .tip,
+      .overload-item {
+        padding: 16px;
+        border-radius: 16px;
+      }
+      .meta-value,
+      .hero-card-value {
+        font-size: 14px;
+      }
+      .sticky-nav-wrap {
+        position: static;
+        padding-top: 10px;
+      }
+      .week-nav {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 8px;
+        border-radius: 16px;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+      }
+      .week-nav::-webkit-scrollbar { display: none; }
+      .day-tab {
+        flex: 0 0 78%;
+        min-height: unset;
+        padding: 14px;
+        border-radius: 14px;
+        scroll-snap-align: start;
+      }
+      .tab-day {
+        font-size: 9px;
+        margin-bottom: 6px;
+      }
+      .tab-name {
+        font-size: 20px;
+        margin-bottom: 8px;
+      }
+      .tab-type {
+        font-size: 9px;
+        padding: 5px 9px;
+      }
+      .content {
+        padding: 16px 0 40px;
+      }
+      .day-shell {
+        padding: 16px 12px;
+        border-radius: 18px;
+      }
+      .day-header {
+        margin-bottom: 18px;
+        gap: 14px;
+      }
+      .day-title {
+        font-size: clamp(30px, 11vw, 42px);
+        letter-spacing: 1px;
+      }
+      .day-subtitle {
+        font-size: 12px;
+        line-height: 1.6;
+      }
+      .day-stats {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+      .stat-box {
+        min-width: 0;
+        padding: 12px 8px;
+        border-radius: 14px;
+      }
+      .stat-num {
+        font-size: 26px;
+      }
+      .stat-label {
+        font-size: 8px;
+        letter-spacing: 1px;
+      }
+      .block {
+        padding: 16px 14px 8px;
+        border-radius: 18px;
+      }
+      .block-label {
+        font-size: 9px;
+        letter-spacing: 2px;
+        gap: 8px;
+        padding-bottom: 12px;
+      }
+      .block-label::before {
+        width: 18px;
+      }
+      .exercise {
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        padding: 14px 0;
+      }
+      .exercise::before {
+        left: -8px;
+      }
+      .ex-name {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        font-size: 14px;
+        line-height: 1.45;
+        padding-right: 4px;
+      }
+      .ex-tag {
+        font-size: 9px;
+        padding: 4px 8px;
+      }
+      .ex-reps {
+        min-width: 54px;
+        font-size: 20px;
+        line-height: 1;
+      }
+      .cardio-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 14px 0 10px;
+      }
+      .cardio-label {
+        font-size: 14px;
+      }
+      .cardio-detail {
+        font-size: 11px;
+        padding: 7px 9px;
+      }
+      .tip p,
+      .overload-desc,
+      .rest-sub,
+      .footer-note {
+        font-size: 12px;
+        line-height: 1.7;
+      }
+      .tip-title {
+        font-size: 9px;
+        letter-spacing: 1.5px;
+      }
+      .overload-header {
+        padding: 14px 16px;
+        font-size: 16px;
+        line-height: 1.2;
+        letter-spacing: 2px;
+      }
+      .overload-num {
+        font-size: 30px;
+      }
+      .rest-panel {
+        min-height: 300px;
+        padding: 26px 18px;
+        border-radius: 18px;
+      }
+      .rest-orb {
+        width: 84px;
+        height: 84px;
+        font-size: 34px;
+      }
+      .rest-title {
+        font-size: clamp(34px, 12vw, 46px);
+        letter-spacing: 2px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .day-tab { flex-basis: 86%; }
+      .day-stats { grid-template-columns: 1fr; }
+      .stat-box { text-align: left; }
+      .exercise {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+      .ex-reps {
+        text-align: left;
+        min-width: 0;
+      }
+      .block,
+      .tip,
+      .overload-item,
+      .hero-card,
+      .meta-item {
+        padding: 14px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
