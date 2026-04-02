@@ -10,6 +10,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png" />
   <meta name="theme-color" content="#060606" />
+  <meta name="application-name" content="Ficha Jeff" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -91,6 +92,118 @@
     .app {
       position: relative;
       z-index: 1;
+    }
+
+    body.is-booting {
+      overflow: hidden;
+    }
+
+    .boot-splash {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      background:
+        radial-gradient(circle at 50% 22%, rgba(200, 245, 66, 0.16), transparent 24%),
+        radial-gradient(circle at 50% 78%, rgba(245, 166, 35, 0.12), transparent 28%),
+        linear-gradient(180deg, rgba(5, 5, 5, 0.98), rgba(10, 10, 10, 0.98));
+      transition: opacity .45s ease, visibility .45s ease;
+    }
+
+    .boot-splash.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .boot-card {
+      width: min(100%, 360px);
+      padding: 28px 24px 22px;
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+      backdrop-filter: blur(18px);
+      text-align: center;
+      box-shadow: 0 24px 80px rgba(0,0,0,.35);
+    }
+
+    .boot-icon-wrap {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      margin: 0 auto 18px;
+    }
+
+    .boot-icon-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -10px;
+      border-radius: 28px;
+      border: 1px solid rgba(200,245,66,.22);
+      animation: splashPulse 1.8s ease-out infinite;
+    }
+
+    .boot-icon {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 24px;
+      box-shadow: 0 14px 30px rgba(0,0,0,.32);
+    }
+
+    .boot-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .boot-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(36px, 7vw, 52px);
+      line-height: .95;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    .boot-copy {
+      color: #c8c8c8;
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .boot-progress {
+      position: relative;
+      height: 6px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255,255,255,.08);
+    }
+
+    .boot-progress::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform-origin: left center;
+      animation: splashLoad 1.15s ease-in-out infinite;
+    }
+
+    @keyframes splashPulse {
+      0% { opacity: .8; transform: scale(.95); }
+      70% { opacity: 0; transform: scale(1.14); }
+      100% { opacity: 0; transform: scale(1.14); }
+    }
+
+    @keyframes splashLoad {
+      0% { transform: scaleX(.15); opacity: .65; }
+      55% { transform: scaleX(.82); opacity: 1; }
+      100% { transform: scaleX(1); opacity: .82; }
     }
 
     .container {
@@ -1239,7 +1352,18 @@
     }
   </style>
 </head>
-<body>
+<body class="is-booting">
+  <div class="boot-splash" id="bootSplash" aria-hidden="true">
+    <div class="boot-card">
+      <div class="boot-icon-wrap">
+        <img class="boot-icon" src="./icons/icon-180.png" alt="" width="96" height="96" />
+      </div>
+      <div class="boot-label">App instalado</div>
+      <div class="boot-title">FICHA JEFF</div>
+      <p class="boot-copy">Carregando sua ficha com acesso r&aacute;pido, visual de app e suporte offline.</p>
+      <div class="boot-progress"></div>
+    </div>
+  </div>
   <div class="app">
     <div class="container hero-wrap">
       <header class="hero reveal">
@@ -2466,6 +2590,27 @@
         el.addEventListener('click', () => openExModal(el, EXERCISES[name]));
       }
     });
+
+    const bootSplash = document.getElementById('bootSplash');
+    const hideBootSplash = () => {
+      if (!bootSplash || bootSplash.classList.contains('is-hidden')) return;
+      bootSplash.classList.add('is-hidden');
+      document.body.classList.remove('is-booting');
+    };
+
+    window.addEventListener('load', () => {
+      window.setTimeout(hideBootSplash, 550);
+    });
+
+    window.setTimeout(hideBootSplash, 2200);
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => {
+          console.error('Falha ao registrar service worker:', err);
+        });
+      });
+    }
   </script>
 </body>
 </html>
